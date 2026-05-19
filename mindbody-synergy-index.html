@@ -1,0 +1,830 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>MindBody Synergy CIC</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+:root {
+  --sage: #4a7c59; --sage-light: #d4e8da; --sage-dark: #2c4f38;
+  --clay: #b05c3a; --clay-light: #f0ddd4;
+  --cream: #f5f0e8; --cream-dark: #ede5d6;
+  --bark: #2d2420; --mist: #7a8b82;
+  --sky: #6b98b2; --sky-light: #d8eaf4;
+  --white: #fdfcfa;
+  --serif: 'Cormorant Garamond', Georgia, serif;
+  --sans: 'DM Sans', sans-serif;
+}
+html, body { height: 100%; overflow: hidden; font-family: var(--sans); background: var(--white); color: var(--bark); font-size: 16px; }
+
+/* NAV */
+nav {
+  position: fixed; top: 0; left: 0; right: 0; z-index: 200;
+  background: rgba(253,252,250,0.97); backdrop-filter: blur(10px);
+  border-bottom: 1px solid var(--cream-dark);
+  padding: 0 3rem; height: 76px;
+  display: flex; align-items: center; justify-content: space-between;
+}
+.nav-logo { font-family: var(--serif); font-size: 1.2rem; font-weight: 600; color: var(--sage-dark); text-decoration: none; line-height: 1.2; cursor: pointer; border: none; background: none; }
+.nav-logo span { display: block; font-size: 0.6rem; font-family: var(--sans); font-weight: 300; color: var(--mist); letter-spacing: 0.14em; text-transform: uppercase; }
+.nav-links { display: flex; gap: 0.15rem; list-style: none; align-items: center; }
+.nav-links button { background: none; border: none; cursor: pointer; font-family: var(--sans); font-size: 0.73rem; font-weight: 400; letter-spacing: 0.07em; text-transform: uppercase; color: var(--mist); padding: 0.42rem 0.65rem; border-radius: 0.4rem; transition: color 0.2s, background 0.2s; }
+.nav-links button:hover { color: var(--sage); background: var(--sage-light); }
+.nav-links button.active { color: var(--sage-dark); font-weight: 500; }
+.nav-cta-btn { background: var(--sage) !important; color: #fff !important; padding: 0.42rem 1rem !important; border-radius: 2rem !important; }
+.nav-cta-btn:hover { background: var(--sage-dark) !important; }
+.hamburger { display: none; background: none; border: none; cursor: pointer; flex-direction: column; gap: 5px; padding: 4px; }
+.hamburger span { display: block; width: 22px; height: 2px; background: var(--bark); border-radius: 2px; transition: all 0.3s; }
+.hamburger.open span:nth-child(1) { transform: translateY(7px) rotate(45deg); }
+.hamburger.open span:nth-child(2) { opacity: 0; }
+.hamburger.open span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
+.mobile-menu { display: none; position: fixed; top: 76px; left: 0; right: 0; z-index: 190; background: rgba(253,252,250,0.99); backdrop-filter: blur(10px); border-bottom: 1px solid var(--cream-dark); padding: 1rem 2rem 1.25rem; flex-direction: column; gap: 0.2rem; }
+.mobile-menu.open { display: flex; }
+.mobile-menu button { background: none; border: none; cursor: pointer; font-family: var(--sans); font-size: 0.95rem; color: var(--bark); padding: 0.6rem 0.5rem; text-align: left; border-bottom: 1px solid var(--cream-dark); transition: color 0.2s; }
+.mobile-menu button:hover, .mobile-menu button.active { color: var(--sage); font-weight: 500; }
+
+/* Page dots sidebar */
+.page-dots { position: fixed; right: 1.25rem; top: 50%; transform: translateY(-50%); display: flex; flex-direction: column; gap: 7px; z-index: 200; }
+.page-dots button { width: 7px; height: 7px; border-radius: 50%; background: var(--cream-dark); border: none; cursor: pointer; transition: all 0.3s; padding: 0; }
+.page-dots button.active { background: var(--sage); transform: scale(1.5); }
+.page-dots button:hover:not(.active) { background: var(--mist); }
+
+/* Pages system */
+.pages-wrapper { position: fixed; top: 76px; left: 0; right: 0; bottom: 0; overflow: hidden; }
+.page { position: absolute; top: 0; left: 0; right: 0; bottom: 0; overflow-y: auto; overflow-x: hidden; opacity: 0; pointer-events: none; transform: translateY(20px); transition: opacity 0.4s ease, transform 0.4s ease; -webkit-overflow-scrolling: touch; }
+.page.active { opacity: 1; pointer-events: all; transform: translateY(0); }
+.page.exiting { opacity: 0; transform: translateY(-20px); }
+
+/* Trust strip */
+.trust-strip { background: var(--sage-dark); padding: 0.9rem 3rem; display: flex; align-items: center; justify-content: center; gap: 1.75rem; flex-wrap: wrap; }
+.trust-strip span { font-size: 0.7rem; letter-spacing: 0.09em; text-transform: uppercase; color: rgba(255,255,255,0.45); }
+.trust-strip strong { font-size: 0.75rem; letter-spacing: 0.07em; text-transform: uppercase; color: rgba(255,255,255,0.82); font-weight: 500; }
+.trust-divider { width: 1px; height: 15px; background: rgba(255,255,255,0.17); }
+
+/* Shared */
+.page-inner { padding: 3rem 4rem 5rem; max-width: 1300px; margin: 0 auto; }
+.section-label { font-size: 0.68rem; font-weight: 500; letter-spacing: 0.15em; text-transform: uppercase; color: var(--clay); margin-bottom: 0.55rem; }
+.section-title { font-family: var(--serif); font-size: clamp(1.9rem, 3.2vw, 2.9rem); font-weight: 300; line-height: 1.15; color: var(--sage-dark); margin-bottom: 0.7rem; }
+.section-title em { font-style: italic; color: var(--clay); }
+.section-sub { font-size: 0.93rem; color: var(--mist); max-width: 560px; line-height: 1.8; margin-bottom: 2.25rem; }
+.divider { width: 42px; height: 2px; background: var(--clay); border-radius: 2px; margin: 0.9rem 0 1.4rem; }
+.btn-primary { background: var(--sage); color: #fff; padding: 0.78rem 1.8rem; border-radius: 2rem; font-size: 0.84rem; font-weight: 500; text-decoration: none; display: inline-block; transition: all 0.2s; }
+.btn-primary:hover { background: var(--sage-dark); transform: translateY(-1px); }
+.btn-secondary { border: 1.5px solid var(--sage); color: var(--sage); padding: 0.78rem 1.8rem; border-radius: 2rem; font-size: 0.84rem; font-weight: 500; text-decoration: none; display: inline-block; transition: all 0.2s; }
+.btn-secondary:hover { background: var(--sage); color: #fff; }
+.btn-light { background: #fff; color: var(--sage-dark); padding: 0.78rem 1.8rem; border-radius: 2rem; font-size: 0.84rem; font-weight: 500; text-decoration: none; display: inline-block; transition: all 0.2s; }
+.btn-light:hover { background: var(--cream); }
+.btn-sky { background: var(--sky); color: #fff; padding: 0.78rem 1.8rem; border-radius: 2rem; font-size: 0.84rem; font-weight: 500; text-decoration: none; display: inline-block; transition: background 0.2s; }
+.btn-sky:hover { background: #4d7e9e; }
+
+/* HOME */
+.hero-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 3.5rem; align-items: center; padding: 1.5rem 0 2rem; }
+.hero-tag { display: inline-block; font-size: 0.68rem; font-weight: 500; letter-spacing: 0.14em; text-transform: uppercase; color: var(--sage); background: var(--sage-light); padding: 0.32rem 0.8rem; border-radius: 2rem; margin-bottom: 1.1rem; }
+.hero-h1 { font-family: var(--serif); font-size: clamp(2.4rem, 4vw, 3.75rem); font-weight: 300; line-height: 1.1; color: var(--sage-dark); margin-bottom: 1.1rem; }
+.hero-h1 em { font-style: italic; color: var(--clay); }
+.hero-sub { font-size: 0.95rem; color: var(--mist); line-height: 1.82; max-width: 450px; margin-bottom: 1.9rem; }
+.hero-actions { display: flex; gap: 0.8rem; flex-wrap: wrap; }
+.hero-stats { display: grid; grid-template-columns: 1fr 1fr; gap: 0.8rem; margin-bottom: 0.8rem; }
+.stat-card { background: #fff; border: 1px solid var(--cream-dark); border-radius: 0.875rem; padding: 1.1rem; }
+.stat-card .num { font-family: var(--serif); font-size: 3.2rem; font-weight: 600; color: var(--sage-dark); line-height: 1; margin-bottom: 0.3rem; }
+.stat-card .num span { font-size: 1.8rem; }
+.stat-card .label { font-size: 0.73rem; color: var(--mist); line-height: 1.45; }
+.hero-quote { background: var(--sage-dark); border-radius: 0.875rem; padding: 1.4rem; color: #fff; }
+.hero-quote blockquote { font-family: var(--serif); font-size: 1.05rem; font-style: italic; font-weight: 300; line-height: 1.6; color: rgba(255,255,255,0.9); margin-bottom: 0.55rem; }
+.hero-quote cite { font-size: 0.7rem; color: rgba(255,255,255,0.42); letter-spacing: 0.04em; }
+
+/* ABOUT */
+.about-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 4rem; align-items: start; }
+.need-facts { display: flex; flex-direction: column; gap: 1.15rem; margin-top: 1.5rem; }
+.fact-row { display: flex; gap: 0.9rem; align-items: flex-start; }
+.fact-num { font-family: var(--serif); font-size: 1.8rem; font-weight: 600; color: var(--clay); line-height: 1; min-width: 68px; }
+.fact-desc { font-size: 0.86rem; color: var(--bark); line-height: 1.68; padding-top: 0.28rem; }
+.fact-desc strong { color: var(--sage-dark); font-weight: 500; }
+.need-visual { display: flex; flex-direction: column; gap: 0.7rem; }
+.condition-pill { display: flex; align-items: center; gap: 0.9rem; background: #fff; border: 1px solid var(--cream-dark); border-radius: 0.75rem; padding: 0.85rem 1rem; }
+.pill-icon { width: 36px; height: 36px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 0.95rem; flex-shrink: 0; }
+.pill-title { font-weight: 500; font-size: 0.84rem; margin-bottom: 0.1rem; }
+.pill-desc { font-size: 0.72rem; color: var(--mist); }
+
+/* SERVICES */
+.services-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: 1.1rem; }
+.service-card { background: var(--cream); border: 1px solid var(--cream-dark); border-radius: 1.1rem; padding: 1.6rem; transition: transform 0.2s, box-shadow 0.2s; position: relative; overflow: hidden; }
+.service-card::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px; }
+.service-card.green::before { background: var(--sage); }
+.service-card.clay::before { background: var(--clay); }
+.service-card.sky::before { background: var(--sky); }
+.service-card:hover { transform: translateY(-4px); box-shadow: 0 10px 28px rgba(44,79,56,0.1); }
+.service-icon { width: 42px; height: 42px; border-radius: 0.6rem; display: flex; align-items: center; justify-content: center; font-size: 1.2rem; margin-bottom: 0.9rem; }
+.service-card.green .service-icon { background: var(--sage-light); }
+.service-card.clay .service-icon { background: var(--clay-light); }
+.service-card.sky .service-icon { background: var(--sky-light); }
+.service-title { font-family: var(--serif); font-size: 1.15rem; font-weight: 600; color: var(--sage-dark); margin-bottom: 0.55rem; }
+.service-desc { font-size: 0.82rem; color: var(--mist); line-height: 1.72; margin-bottom: 1.1rem; }
+.service-tags { display: flex; flex-wrap: wrap; gap: 0.3rem; }
+.tag { font-size: 0.66rem; font-weight: 500; padding: 0.2rem 0.55rem; border-radius: 2rem; }
+.tag-sage { color: var(--sage); background: var(--sage-light); }
+.tag-clay { color: var(--clay); background: var(--clay-light); }
+.tag-sky { color: var(--sky); background: var(--sky-light); }
+.breathe-spotlight { background: var(--sage-dark); border-radius: 1.1rem; padding: 2rem 2.25rem; margin-top: 2.25rem; display: grid; grid-template-columns: 1fr 1fr; gap: 2.5rem; align-items: center; }
+.breathe-cards { display: flex; flex-direction: column; gap: 0.8rem; }
+.breathe-card { background: rgba(255,255,255,0.07); border: 1px solid rgba(255,255,255,0.12); border-radius: 0.75rem; padding: 1.1rem; }
+.breathe-card h4 { font-family: var(--serif); font-size: 1rem; color: #fff; margin-bottom: 0.35rem; }
+.breathe-card p { font-size: 0.79rem; color: rgba(255,255,255,0.5); line-height: 1.65; }
+.breathe-price { margin-top: 1.35rem; background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.18); border-radius: 0.75rem; padding: 1.1rem; display: flex; align-items: center; gap: 1.1rem; }
+.price-main { font-family: var(--serif); font-size: 2.2rem; font-weight: 600; color: #fff; line-height: 1; }
+.price-sub { font-size: 0.72rem; color: rgba(255,255,255,0.4); }
+
+/* APPROACH */
+.approach-grid { display: grid; grid-template-columns: repeat(4,1fr); gap: 1.1rem; }
+.approach-card { padding: 1.6rem; border: 1px solid var(--cream-dark); border-radius: 0.875rem; }
+.approach-num { font-family: var(--serif); font-size: 2.6rem; font-weight: 300; color: var(--cream-dark); line-height: 1; margin-bottom: 0.8rem; }
+.approach-title { font-weight: 500; font-size: 0.9rem; color: var(--sage-dark); margin-bottom: 0.38rem; }
+.approach-desc { font-size: 0.8rem; color: var(--mist); line-height: 1.65; }
+
+/* EVENTS */
+.events-header { display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 1.75rem; }
+.view-all-link { font-size: 0.8rem; font-weight: 500; color: var(--sage); text-decoration: none; border-bottom: 1px solid var(--sage-light); padding-bottom: 1px; }
+.view-all-link:hover { border-color: var(--sage); }
+.event-card { background: #fff; border: 1px solid var(--cream-dark); border-radius: 0.875rem; overflow: hidden; transition: transform 0.2s; }
+.event-card:hover { transform: translateY(-3px); }
+.event-date-bar { padding: 0.75rem 1rem; display: flex; justify-content: space-between; align-items: center; }
+.event-date-bar .date { font-family: var(--serif); font-size: 1.3rem; font-weight: 600; color: #fff; line-height: 1; }
+.event-date-bar .month { font-size: 0.65rem; letter-spacing: 0.09em; text-transform: uppercase; color: rgba(255,255,255,0.62); }
+.event-date-bar .type-pill { background: rgba(255,255,255,0.2); color: #fff; font-size: 0.63rem; letter-spacing: 0.06em; text-transform: uppercase; padding: 0.25rem 0.6rem; border-radius: 2rem; }
+.event-body { padding: 1rem; }
+.event-title { font-family: var(--serif); font-size: 1rem; font-weight: 600; color: var(--sage-dark); margin-bottom: 0.28rem; }
+.event-meta { font-size: 0.72rem; color: var(--mist); margin-bottom: 0.55rem; }
+.event-desc { font-size: 0.8rem; color: var(--bark); line-height: 1.62; }
+.gallery-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: 0.7rem; }
+.gallery-item { }
+.gallery-img { border-radius: 0.7rem; overflow: hidden; height: 185px; background: var(--sage-light); }
+.gallery-img img { width: 100%; height: 100%; object-fit: cover; display: block; transition: transform 0.3s; }
+.gallery-img:hover img { transform: scale(1.05); }
+.gallery-caption { font-size: 0.67rem; color: var(--mist); text-align: center; margin-top: 0.32rem; }
+
+/* BLOG */
+.blog-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: 1.35rem; }
+.blog-card { border: 1px solid var(--cream-dark); border-radius: 0.875rem; overflow: hidden; transition: transform 0.2s; }
+.blog-card:hover { transform: translateY(-3px); }
+.blog-img { height: 150px; background: var(--sage-light); display: flex; align-items: center; justify-content: center; font-size: 2rem; }
+.blog-img.clay-bg { background: var(--clay-light); }
+.blog-img.sky-bg { background: var(--sky-light); }
+.blog-body { padding: 1.05rem; }
+.blog-cat { font-size: 0.64rem; font-weight: 500; letter-spacing: 0.1em; text-transform: uppercase; color: var(--sage); margin-bottom: 0.38rem; }
+.blog-title { font-family: var(--serif); font-size: 1rem; font-weight: 600; color: var(--sage-dark); margin-bottom: 0.42rem; line-height: 1.35; }
+.blog-excerpt { font-size: 0.78rem; color: var(--mist); line-height: 1.65; margin-bottom: 0.8rem; }
+.blog-footer { display: flex; justify-content: space-between; align-items: center; }
+.blog-author { font-size: 0.7rem; color: var(--mist); }
+.blog-read { font-size: 0.7rem; font-weight: 500; color: var(--sage); text-decoration: none; }
+
+/* FOUNDER */
+.founder-grid { display: grid; grid-template-columns: 1fr 1.55fr; gap: 4rem; align-items: start; }
+.founder-name-bar { margin-top: 0.8rem; background: var(--sage-dark); border-radius: 0.6rem; padding: 0.85rem 1rem; text-align: center; }
+.founder-name-bar p:first-child { font-family: var(--serif); color: #fff; font-size: 0.98rem; }
+.founder-name-bar p:last-child { font-size: 0.66rem; color: rgba(255,255,255,0.42); letter-spacing: 0.05em; text-transform: uppercase; margin-top: 0.18rem; }
+.founder-quote { font-family: var(--serif); font-size: 1.32rem; font-style: italic; font-weight: 300; color: var(--sage-dark); line-height: 1.45; border-left: 3px solid var(--clay); padding-left: 1.15rem; margin: 1.15rem 0; }
+.mvv-card { background: var(--cream); border-radius: 0.8rem; padding: 1.1rem 1.25rem; margin-bottom: 0.75rem; }
+.mvv-label { font-size: 0.66rem; font-weight: 500; letter-spacing: 0.12em; text-transform: uppercase; margin-bottom: 0.42rem; }
+.mvv-card p { font-size: 0.84rem; color: var(--bark); line-height: 1.75; }
+.value-row { display: flex; gap: 0.7rem; align-items: flex-start; margin-bottom: 0.45rem; }
+.value-row:last-child { margin-bottom: 0; }
+.value-label { font-size: 0.72rem; font-weight: 500; color: var(--sage-dark); min-width: 150px; }
+.value-desc { font-size: 0.79rem; color: var(--mist); }
+
+/* TRAINING */
+.training-grid { display: grid; grid-template-columns: 1.2fr 1fr; gap: 3.5rem; align-items: start; }
+.training-list { display: flex; flex-direction: column; gap: 0.8rem; margin-top: 1.35rem; }
+.training-item { display: flex; gap: 0.9rem; align-items: flex-start; background: #fff; border-radius: 0.7rem; padding: 1rem; border: 1px solid rgba(107,152,178,0.2); }
+.t-num { font-family: var(--serif); font-size: 1.35rem; font-weight: 600; color: var(--sky); line-height: 1; min-width: 30px; }
+.training-item h4 { font-weight: 500; font-size: 0.86rem; color: var(--sage-dark); margin-bottom: 0.18rem; }
+.training-item p { font-size: 0.77rem; color: var(--mist); }
+.training-cta-box { background: #fff; border-radius: 1.1rem; padding: 1.85rem; border: 1px solid rgba(107,152,178,0.22); text-align: center; position: sticky; top: 1rem; }
+.training-cta-box h3 { font-family: var(--serif); font-size: 1.45rem; color: var(--sage-dark); margin-bottom: 0.6rem; }
+.training-cta-box > p { font-size: 0.81rem; color: var(--mist); margin-bottom: 1.1rem; line-height: 1.7; }
+.booking-pills { display: flex; gap: 0.5rem; justify-content: center; flex-wrap: wrap; margin-top: 0.8rem; }
+.booking-pills a { font-size: 0.73rem; color: var(--sky); text-decoration: none; border: 1px solid var(--sky-light); padding: 0.32rem 0.75rem; border-radius: 2rem; transition: background 0.2s; }
+.booking-pills a:hover { background: var(--sky-light); }
+
+/* GET INVOLVED */
+.involve-hero { background: var(--bark); border-radius: 1.1rem; padding: 2.75rem; text-align: center; margin-bottom: 1.75rem; }
+.involve-cards { display: grid; grid-template-columns: repeat(3,1fr); gap: 1rem; }
+.involve-card { background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.1); border-radius: 0.875rem; padding: 1.6rem; text-align: left; }
+.involve-card .i-icon { font-size: 1.35rem; margin-bottom: 0.8rem; }
+.involve-card h4 { font-family: var(--serif); font-size: 1.05rem; color: #fff; margin-bottom: 0.38rem; }
+.involve-card p { font-size: 0.79rem; color: rgba(255,255,255,0.42); line-height: 1.65; }
+.involve-actions { display: flex; gap: 0.8rem; justify-content: center; margin-top: 1.85rem; }
+.partner-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+.partner-card { background: #fff; border: 1px solid var(--cream-dark); border-radius: 0.875rem; padding: 1.4rem; }
+.partner-card h4 { font-family: var(--serif); font-size: 1.05rem; color: var(--sage-dark); margin-bottom: 0.38rem; }
+.partner-card p { font-size: 0.8rem; color: var(--mist); line-height: 1.65; }
+
+/* FOOTER */
+.site-footer { background: var(--bark); padding: 2.75rem 4rem 1.75rem; color: rgba(255,255,255,0.5); }
+.footer-grid { display: grid; grid-template-columns: 2fr 1fr 1fr 1fr; gap: 2.25rem; margin-bottom: 2.25rem; }
+.footer-brand .logo { font-family: var(--serif); font-size: 1.15rem; font-weight: 600; color: #fff; margin-bottom: 0.55rem; }
+.footer-brand p { font-size: 0.78rem; line-height: 1.77; max-width: 265px; }
+.footer-brand .address { margin-top: 0.8rem; font-size: 0.73rem; line-height: 1.85; }
+.footer-col h5 { font-size: 0.66rem; letter-spacing: 0.1em; text-transform: uppercase; color: rgba(255,255,255,0.28); margin-bottom: 0.8rem; font-weight: 400; }
+.footer-col ul { list-style: none; display: flex; flex-direction: column; gap: 0.42rem; }
+.footer-col a { font-size: 0.78rem; color: rgba(255,255,255,0.5); text-decoration: none; transition: color 0.2s; }
+.footer-col a:hover { color: #fff; }
+.newsletter-form { display: flex; gap: 0.4rem; margin-top: 0.55rem; }
+.newsletter-form input { flex: 1; background: rgba(255,255,255,0.07); border: 1px solid rgba(255,255,255,0.13); border-radius: 0.42rem; padding: 0.58rem 0.75rem; color: #fff; font-size: 0.77rem; font-family: var(--sans); outline: none; }
+.newsletter-form input::placeholder { color: rgba(255,255,255,0.22); }
+.newsletter-form button { background: var(--sage); border: none; border-radius: 0.42rem; padding: 0.58rem 0.85rem; color: #fff; cursor: pointer; font-size: 0.73rem; font-family: var(--sans); font-weight: 500; transition: background 0.2s; }
+.newsletter-form button:hover { background: var(--sage-dark); }
+.social-links { display: flex; gap: 0.65rem; margin-top: 0.9rem; }
+.social-links a { width: 30px; height: 30px; border-radius: 50%; background: rgba(255,255,255,0.07); border: 1px solid rgba(255,255,255,0.11); display: flex; align-items: center; justify-content: center; color: rgba(255,255,255,0.45); text-decoration: none; font-size: 0.7rem; transition: all 0.2s; }
+.social-links a:hover { background: var(--sage); color: #fff; border-color: var(--sage); }
+.footer-bottom { border-top: 1px solid rgba(255,255,255,0.07); padding-top: 1.1rem; display: flex; justify-content: space-between; align-items: center; }
+.footer-bottom p { font-size: 0.7rem; }
+.footer-bottom a { color: rgba(255,255,255,0.32); text-decoration: none; }
+.footer-bottom a:hover { color: rgba(255,255,255,0.62); }
+
+@media (max-width: 960px) {
+  .page-inner { padding: 1.75rem 1.5rem 4rem; }
+  nav { padding: 0 1.25rem; }
+  .nav-links { display: none; }
+  .hamburger { display: flex; }
+  .page-dots { display: none; }
+  .trust-strip { padding: 0.8rem 1rem; gap: 0.85rem; }
+  .hero-grid, .about-grid, .founder-grid, .training-grid { grid-template-columns: 1fr; gap: 1.75rem; }
+  .services-grid, .approach-grid, .blog-grid, .involve-cards, .partner-grid { grid-template-columns: 1fr; }
+  .gallery-grid, .hero-stats { grid-template-columns: 1fr 1fr; }
+  .breathe-spotlight { grid-template-columns: 1fr; gap: 1.25rem; }
+  .footer-grid { grid-template-columns: 1fr 1fr; gap: 1.35rem; }
+  .events-header { flex-direction: column; gap: 0.65rem; align-items: flex-start; }
+  .events-3col { grid-template-columns: 1fr !important; }
+}
+</style>
+</head>
+<body>
+
+<nav>
+  <button class="nav-logo" onclick="goTo('home')" style="display:flex;align-items:center;gap:0.6rem;background:none;border:none;cursor:pointer;padding:0">
+  <img src="https://static.wixstatic.com/media/55cf6a_9c19cb948ebd4650b8c391d0411702c0~mv2.png/v1/fill/w_125,h_133,al_c,q_85,usm_0.66_1.00_0.01,enc_avif,quality_auto/MBS%20logo_edited.png" alt="MindBody Synergy CIC logo" style="height:56px;width:auto;display:block" onerror="this.style.display='none'">
+  <span style="display:flex;flex-direction:column;align-items:flex-start">
+    <span style="font-family:var(--serif);font-size:1.1rem;font-weight:600;color:var(--sage-dark);letter-spacing:0.01em;line-height:1.2">MindBody Synergy</span>
+    <span style="font-size:0.58rem;font-family:var(--sans);font-weight:300;color:var(--mist);letter-spacing:0.14em;text-transform:uppercase">Community Interest Company</span>
+  </span>
+</button>
+  <ul class="nav-links">
+    <li><button onclick="goTo('home')" data-page="home" class="active">Home</button></li>
+    <li><button onclick="goTo('about')" data-page="about">About</button></li>
+    <li><button onclick="goTo('services')" data-page="services">Services</button></li>
+    <li><button onclick="goTo('approach')" data-page="approach">Our Approach</button></li>
+    <li><button onclick="goTo('events')" data-page="events">Events</button></li>
+    <li><button onclick="goTo('blog')" data-page="blog">Blog</button></li>
+    <li><button onclick="goTo('founder')" data-page="founder">About Us</button></li>
+    <li><button onclick="goTo('training')" data-page="training">Training</button></li>
+    <li><button onclick="goTo('involve')" data-page="involve" class="nav-cta-btn">Get Involved</button></li>
+  </ul>
+  <button class="hamburger" id="hamburger" onclick="toggleMenu()"><span></span><span></span><span></span></button>
+</nav>
+
+<div class="mobile-menu" id="mobileMenu">
+  <button onclick="goTo('home');closeMenu()">Home</button>
+  <button onclick="goTo('about');closeMenu()">About</button>
+  <button onclick="goTo('services');closeMenu()">Services</button>
+  <button onclick="goTo('approach');closeMenu()">Our Approach</button>
+  <button onclick="goTo('events');closeMenu()">Events</button>
+  <button onclick="goTo('blog');closeMenu()">Blog</button>
+  <button onclick="goTo('founder');closeMenu()">Our Founder</button>
+  <button onclick="goTo('training');closeMenu()">Training</button>
+  <button onclick="goTo('involve');closeMenu()" style="color:var(--sage);font-weight:500;border-bottom:none">Get Involved</button>
+</div>
+
+<div class="page-dots" id="pageDots"></div>
+
+<div class="pages-wrapper">
+
+<!-- ══════════ HOME ══════════ -->
+<div class="page active" id="page-home">
+  <div class="trust-strip">
+    <div><span>Based in </span><strong>Gloucester</strong></div><div class="trust-divider"></div>
+    <div><strong>CPD-Accredited</strong><span> Training</span></div><div class="trust-divider"></div>
+    <div><span>Serving </span><strong>Nationwide</strong></div><div class="trust-divider"></div>
+    <div><span>Supporting </span><strong>Underserved Communities</strong></div><div class="trust-divider"></div>
+    <div><strong>Subsidised</strong><span> Therapy Available</span></div><div class="trust-divider"></div>
+    <div><span>Strictly </span><strong>By Appointment</strong></div>
+  </div>
+  <div class="page-inner" style="background:var(--cream)">
+    <div class="hero-grid">
+      <div>
+        <div class="hero-tag">Gloucester · Across the UK</div>
+        <h1 class="hero-h1">Holistic care for <em>breath, mind</em> &amp; community</h1>
+        <p class="hero-sub">MindBody Synergy CIC empowers individuals living with chronic respiratory disease, mental health challenges, and workplace stress — through evidence-based, integrative programmes.</p>
+        <div class="hero-actions">
+          <a href="#" onclick="goTo('involve');return false" class="btn-primary">Get Help Now</a>
+          <a href="#" onclick="goTo('services');return false" class="btn-secondary">Explore Services</a>
+        </div>
+      </div>
+      <div>
+        <div class="hero-stats">
+          <div class="stat-card"><div class="num">1<span>in 5</span></div><div class="label">UK adults living with chronic respiratory disease</div></div>
+          <div class="stat-card"><div class="num">1<span>in 4</span></div><div class="label">individuals affected by mental health challenges</div></div>
+          <div class="stat-card"><div class="num">86<span>%</span></div><div class="label">of respiratory patients have at least one other chronic condition</div></div>
+          <div class="stat-card" style="border-left:3px solid var(--clay)"><div class="num" style="color:var(--clay)">69<span>%</span></div><div class="label">of UK adults unaware of mental health challenges in chronic respiratory disease<br><em style="font-size:0.63rem;color:var(--mist);font-style:normal">— Breath-Mind UK Survey, Tele-Therapies Ltd, Oct 2025</em></div></div>
+        </div>
+        <div class="hero-quote">
+          <blockquote>"Witnessing the struggles of those with COPD, asthma, anxiety, and workplace injuries, I recognised the urgent need for a holistic, integrated approach to care."</blockquote>
+          <cite>— Dr. Devi Sundar, Founder &amp; Integrative Mind-Body Consultant</cite>
+        </div>
+      </div>
+    </div>
+  </div>
+  <footer class="site-footer">
+    <div class="footer-grid">
+      <div class="footer-brand"><div class="logo">MindBody Synergy CIC</div><p>Dedicated to improving community health and wellbeing through holistic and creative health approaches across the UK.</p><div class="address">Southgate House, Southgate Street<br>Gloucester, GL1 1UB<br><em style="font-size:0.67rem;color:rgba(255,255,255,0.28)">Strictly by appointment only</em></div></div>
+      <div class="footer-col"><h5>Pages</h5><ul><li><a href="#" onclick="goTo('home');return false">Home</a></li><li><a href="#" onclick="goTo('about');return false">About</a></li><li><a href="#" onclick="goTo('services');return false">Services</a></li><li><a href="#" onclick="goTo('approach');return false">Our Approach</a></li><li><a href="#" onclick="goTo('events');return false">Events &amp; Gallery</a></li><li><a href="#" onclick="goTo('blog');return false">Blog</a></li><li><a href="#" onclick="goTo('training');return false">Training</a></li></ul></div>
+      <div class="footer-col"><h5>Contact</h5><ul><li><a href="mailto:support@mindbodysynergycic.org" style="color:rgba(255,255,255,0.8);font-weight:500">support@mindbodysynergycic.org</a></li><li style="font-size:0.7rem;color:rgba(255,255,255,0.28)">General enquiries &amp; bookings</li><li style="margin-top:0.45rem"><a href="tel:07928755125" style="color:rgba(255,255,255,0.68)">07928 755 125</a></li><li style="font-size:0.7rem;color:rgba(255,255,255,0.28)">Dr. Devi Sundar (direct)</li><li style="margin-top:0.7rem"><a href="https://www.mindbodysynergycic.org/bookings" target="_blank" style="background:var(--sage);color:#fff;padding:0.42rem 0.85rem;border-radius:2rem;font-size:0.73rem;font-weight:500;display:inline-block;text-decoration:none">Book Online →</a></li></ul></div>
+      <div class="footer-col"><h5>Newsletter</h5><p style="font-size:0.76rem;margin-bottom:0.55rem">Updates, events &amp; wellness resources.</p><a href="https://lp.constantcontactpages.com/sl/7r16jZz" target="_blank" style="display:block;background:var(--sage);color:#fff;border-radius:0.42rem;padding:0.62rem 0.85rem;text-align:center;font-size:0.75rem;font-weight:500;text-decoration:none;transition:background 0.2s" onmouseover="this.style.background='var(--sage-dark)'" onmouseout="this.style.background='var(--sage)'">Join Our Mailing List →</a><div class="social-links"><a href="https://facebook.com/MindBodySynergyCIC" target="_blank" title="Facebook">f</a></div></div>
+    </div>
+    <div class="footer-bottom"><p>© 2025 MindBody Synergy CIC · Registered in England &amp; Wales (No. 16282002) · <a href="https://www.mindbodysynergycic.org/english-terms-conditions" target="_blank">Terms</a> · <a href="https://www.mindbodysynergycic.org/english-privacy-policy" target="_blank">Privacy</a></p><p style="font-size:0.66rem">Redesign concept — all content © MindBody Synergy CIC</p></div>
+  </footer>
+</div>
+
+<!-- ══════════ ABOUT ══════════ -->
+<div class="page" id="page-about">
+  <div class="page-inner" style="background:var(--cream)">
+    <div class="about-grid">
+      <div>
+        <div class="section-label">The Challenge</div>
+        <h2 class="section-title">Why this work <em>matters</em></h2>
+        <div class="divider"></div>
+        <p class="section-sub">Across the UK, millions navigate complex, interconnected health challenges. Too often they face isolation, stigma, and limited access to integrated support.</p>
+          <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:0.8rem;margin-top:1.5rem">
+            <div class="stat-card"><div class="num" style="color:var(--clay)">15<span>–30%</span></div><div class="label">of respiratory patients <strong style="color:var(--sage-dark);font-weight:500">also live with diabetes</strong>, highlighting the challenge of multimorbidity.</div></div>
+            <div class="stat-card"><div class="num" style="color:var(--clay)">5<span>–15%</span></div><div class="label">experience <strong style="color:var(--sage-dark);font-weight:500">gastrointestinal conditions</strong> such as IBS alongside respiratory disease.</div></div>
+            <div class="stat-card" style="border-left:3px solid var(--clay)"><div class="num" style="color:var(--clay)">68<span>–86%</span></div><div class="label">of respiratory patients live with <strong style="color:var(--sage-dark);font-weight:500">at least one additional chronic condition</strong>.</div></div>
+          </div>
+        <div style="margin-top:2rem;display:flex;gap:0.75rem;flex-wrap:wrap">
+          <a href="#" onclick="goTo('services');return false" class="btn-primary">View Services</a>
+          <a href="#" onclick="goTo('founder');return false" class="btn-secondary">Our Founder</a>
+        </div>
+      </div>
+      <div class="need-visual">
+        <div class="condition-pill"><div class="pill-icon" style="background:var(--sage-light)">🫁</div><div><div class="pill-title">Respiratory Conditions</div><div class="pill-desc">COPD · Asthma · Pulmonary Fibrosis</div></div></div>
+        <div class="condition-pill"><div class="pill-icon" style="background:#f0e6f4">🧠</div><div><div class="pill-title">Mental Health</div><div class="pill-desc">Anxiety · Depression · PTSD · Workplace Stress</div></div></div>
+        <div class="condition-pill"><div class="pill-icon" style="background:var(--clay-light)">💼</div><div><div class="pill-title">Workplace Psychological Injuries</div><div class="pill-desc">Burnout · Stress-related disorders · Exhaustion</div></div></div>
+        <div class="condition-pill"><div class="pill-icon" style="background:var(--sky-light)">🤝</div><div><div class="pill-title">Social Isolation &amp; Multimorbidity</div><div class="pill-desc">Multiple long-term conditions · Limited community access</div></div></div>
+        <div style="background:var(--sage-dark);border-radius:0.875rem;padding:1.2rem;color:#fff">
+          <p style="font-family:var(--serif);font-size:1.08rem;font-style:italic;color:rgba(255,255,255,0.9);margin-bottom:0.38rem">We are here to address these challenges.</p>
+          <p style="font-size:0.78rem;color:rgba(255,255,255,0.48)">Vital resources, education, and support programmes to help people manage their health and reconnect with their communities.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════ SERVICES ══════════ -->
+<div class="page" id="page-services">
+  <div class="page-inner">
+    <div class="section-label">What We Offer</div>
+    <h2 class="section-title">Our <em>Services</em></h2>
+    <div class="divider"></div>
+    <p class="section-sub">Tailored programmes addressing root causes — not just symptoms — of chronic health conditions.</p>
+    <div class="services-grid">
+      <div class="service-card green"><div class="service-icon">🫁</div><div class="service-title">Breathe to Belong</div><p class="service-desc">Guided breathing sessions led by Dr. Devi Sundar. Evidence-based (5–30 mins) for stress reduction and community connection. Breakfast &amp; lunchtime slots, Tue–Thu.</p><div class="service-tags"><span class="tag tag-sage">Healthcare Professionals</span><span class="tag tag-sage">Educators</span><span class="tag tag-sage">Open Access</span></div></div>
+      <div class="service-card clay"><div class="service-icon">👨‍👩‍👧</div><div class="service-title">Sacred Breath, Shared Spaces</div><p class="service-desc">Family breathwork sessions bringing families back to connection, calm, and belonging. Every culture, every story, every family welcomed.</p><div class="service-tags"><span class="tag tag-clay">Family Sessions</span><span class="tag tag-clay">Cross-cultural</span><span class="tag tag-clay">Community</span></div></div>
+      <div class="service-card sky"><div class="service-icon">🩺</div><div class="service-title">Therapeutic Programmes</div><p class="service-desc">Tailored interventions for chronic respiratory conditions and mental health challenges — rehabilitation, stress management, evidence-based coping strategies.</p><div class="service-tags"><span class="tag tag-sky">Respiratory</span><span class="tag tag-sky">Mental Health</span><span class="tag tag-sky">1:1 &amp; Group</span></div></div>
+      <div class="service-card clay"><div class="service-icon">🏢</div><div class="service-title">Workplace Wellness</div><p class="service-desc">Addressing employees facing psychological injuries and stress-related disorders. Workshops and strategies promoting emotional resilience and productivity.</p><div class="service-tags"><span class="tag tag-clay">Employers</span><span class="tag tag-clay">Workshops</span><span class="tag tag-clay">CPD</span></div></div>
+      <div class="service-card green"><div class="service-icon">📚</div><div class="service-title">Education &amp; Advocacy</div><p class="service-desc">Workshops, webinars, and community outreach to raise awareness and reduce stigma. CPD-accredited training for professionals, caregivers, and the public.</p><div class="service-tags"><span class="tag tag-sage">CPD-Accredited</span><span class="tag tag-sage">Webinars</span><span class="tag tag-sage">Outreach</span></div></div>
+      <div class="service-card sky"><div class="service-icon">💊</div><div class="service-title">Subsidised Therapies &amp; Free Courses</div><p class="service-desc">Surplus reinvested into free therapy and training for underserved communities. Respiratory Health Course · Stop Talking, Start Healing.</p><div class="service-tags"><span class="tag tag-sky">Free Access</span><span class="tag tag-sky">Underserved</span><span class="tag tag-sky">Online</span></div></div>
+    </div>
+    <div class="breathe-spotlight">
+      <div>
+        <div class="section-label" style="color:rgba(255,255,255,0.38)">Featured Programme</div>
+        <h2 class="section-title" style="color:#fff">Join the <em>Tribe</em></h2>
+        <div class="divider" style="background:rgba(255,255,255,0.25)"></div>
+        <p style="font-size:0.86rem;color:rgba(255,255,255,0.55);line-height:1.8;margin-bottom:1.35rem">A monthly membership with guided breathwork, sound healing, community, and expert resources — from anywhere in the UK.</p>
+        <div class="breathe-price"><div><div class="price-main">£35</div><div class="price-sub">per month</div></div><div style="font-size:0.77rem;color:rgba(255,255,255,0.55);line-height:1.78">Live 2-hr sessions · 1:1 welcome call · Resources library · WhatsApp community · 10% discount on events</div></div>
+        <a href="mailto:support@mindbodysynergycic.org" class="btn-light" style="margin-top:1.1rem;display:inline-block">Book Your Space →</a>
+      </div>
+      <div class="breathe-cards">
+        <div class="breathe-card"><h4>Breathe to Belong Sessions</h4><p>Tue–Thu, breakfast &amp; lunchtime. Subsidised spaces. Open to healthcare staff, educators, those experiencing homelessness, young people, and business owners.</p></div>
+        <div class="breathe-card"><h4>Sacred Breath, Shared Spaces</h4><p>Family breathwork across cultures. A unique session bringing you back to connection, calm, and belonging.</p></div>
+        <div class="breathe-card"><h4>Contact to Book</h4><p style="margin-bottom:0.35rem">Dr. Devi Sundar · Integrative Mind-Body Consultant</p><p style="color:rgba(255,255,255,0.82);font-weight:500">07928 755 125</p></div>
+      </div>
+    </div>
+
+    <!-- CONTACT STRIP -->
+    <div style="margin-top:2rem;background:var(--cream);border:1px solid var(--cream-dark);border-radius:1rem;padding:1.4rem 2rem;display:flex;align-items:center;justify-content:space-between;gap:1.5rem;flex-wrap:wrap">
+      <div>
+        <p style="font-size:0.68rem;font-weight:500;letter-spacing:0.12em;text-transform:uppercase;color:var(--sage);margin-bottom:0.3rem">Get in touch to book or enquire about any service</p>
+        <p style="font-size:0.84rem;color:var(--bark)">All sessions are by appointment only. We look forward to supporting you.</p>
+      </div>
+      <div style="display:flex;gap:0.75rem;flex-wrap:wrap;flex-shrink:0">
+        <a href="mailto:support@mindbodysynergycic.org" style="display:flex;align-items:center;gap:0.5rem;background:var(--sage);color:#fff;padding:0.65rem 1.25rem;border-radius:2rem;font-size:0.82rem;font-weight:500;text-decoration:none;transition:background 0.2s" onmouseover="this.style.background='var(--sage-dark)'" onmouseout="this.style.background='var(--sage)'">
+          📧 support@mindbodysynergycic.org
+        </a>
+        <a href="tel:07928755125" style="display:flex;align-items:center;gap:0.5rem;background:#fff;color:var(--sage-dark);border:1.5px solid var(--cream-dark);padding:0.65rem 1.25rem;border-radius:2rem;font-size:0.82rem;font-weight:500;text-decoration:none;transition:all 0.2s" onmouseover="this.style.background='var(--cream)'" onmouseout="this.style.background='#fff'">
+          📞 07928 755 125
+        </a>
+        <a href="https://www.mindbodysynergycic.org/bookings" target="_blank" style="display:flex;align-items:center;gap:0.5rem;background:var(--sky);color:#fff;padding:0.65rem 1.25rem;border-radius:2rem;font-size:0.82rem;font-weight:500;text-decoration:none;transition:background 0.2s" onmouseover="this.style.background='#4d7e9e'" onmouseout="this.style.background='var(--sky)'">
+          🗓 Book Online
+        </a>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════ APPROACH ══════════ -->
+<div class="page" id="page-approach">
+  <div class="page-inner">
+    <div class="section-label">How We Work</div>
+    <h2 class="section-title">Our <em>Approach</em></h2>
+    <div class="divider"></div>
+    <p class="section-sub">We take a holistic approach to health — connecting physical wellbeing, mental health, and social support to promote long-term wellness.</p>
+    <div class="approach-grid">
+      <div class="approach-card"><div class="approach-num">01</div><div class="approach-title">Holistic &amp; Inclusive</div><p class="approach-desc">Connecting physical wellbeing, mental health, and social support. We treat the whole person — not just the diagnosis.</p></div>
+      <div class="approach-card"><div class="approach-num">02</div><div class="approach-title">Prevention-First</div><p class="approach-desc">Education, prevention, and community-building to address root causes before they become crises.</p></div>
+      <div class="approach-card"><div class="approach-num">03</div><div class="approach-title">Community-Driven</div><p class="approach-desc">Partnering with local organisations and healthcare providers to create sustainable, community-owned change.</p></div>
+      <div class="approach-card"><div class="approach-num">04</div><div class="approach-title">Accessible by Design</div><p class="approach-desc">Subsidised, free, and flexible programmes ensure cost and location are never barriers to receiving support.</p></div>
+    </div>
+    <div style="background:var(--cream);border-radius:1.1rem;padding:2.25rem;margin-top:2.75rem;display:grid;grid-template-columns:auto 1fr;gap:2.25rem;align-items:center">
+      <img src="https://static.wixstatic.com/media/f3cbbf_bd899aed0c36466fab2308acc3eaa634~mv2.png/v1/crop/x_113,y_0,w_889,h_1080/fill/w_160,h_195,al_c,q_90,enc_avif,quality_auto/f3cbbf_bd899aed0c36466fab2308acc3eaa634~mv2.png" alt="Dr. Devi Sundar" style="width:120px;border-radius:0.875rem;object-fit:cover;display:block" onerror="this.style.display='none'">
+      <div>
+        <p style="font-family:var(--serif);font-size:1.28rem;font-style:italic;font-weight:300;color:var(--sage-dark);line-height:1.45;margin-bottom:0.65rem">"By combining education, creativity, prevention, and community collaboration, MindBody Synergy CIC aims to create lasting social impact and build healthier, more resilient communities."</p>
+        <p style="font-size:0.76rem;color:var(--mist)">Dr. Devi Sundar · PhD, MSc, MS, FHEA · <a href="#" onclick="goTo('founder');return false" style="color:var(--sage);text-decoration:none">Read about our founder →</a></p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════ EVENTS ══════════ -->
+<div class="page" id="page-events">
+  <div class="page-inner">
+    <div class="events-header">
+      <div><div class="section-label">Community Events</div><h2 class="section-title">Upcoming &amp; Recent <em>Events</em></h2></div>
+      <a href="https://www.mindbodysynergycic.org/gallery" target="_blank" class="view-all-link">Full Gallery →</a>
+    </div>
+    <!-- Featured banner -->
+    <div style="background:var(--sage-dark);border-radius:1.1rem;padding:1.85rem 2.1rem;margin-bottom:1.85rem;display:grid;grid-template-columns:1.1fr 1fr;gap:2.25rem;align-items:center">
+      <div>
+        <span style="font-size:0.65rem;letter-spacing:0.13em;text-transform:uppercase;color:rgba(255,255,255,0.38);font-weight:500;display:block;margin-bottom:0.45rem">Next Event — Date TBC · £20pp · Spaces Limited</span>
+        <h3 style="font-family:var(--serif);font-size:1.75rem;font-weight:300;color:#fff;margin:0 0 0.85rem;line-height:1.15">"Take A Breath" — <em>A Restorative Afternoon</em></h3>
+        <p style="font-size:0.82rem;color:rgba(255,255,255,0.58);line-height:1.77;margin-bottom:1rem">Pause, reset, and reconnect through guided breath codes, dancing breath, singing breath rhythm, breath-inspired creative art, and sound bowl meditation. No experience needed. Refreshments provided.</p>
+        <div style="display:flex;gap:0.42rem;flex-wrap:wrap;margin-bottom:1.1rem">
+          <span style="background:rgba(255,255,255,0.1);color:rgba(255,255,255,0.78);font-size:0.66rem;padding:0.26rem 0.7rem;border-radius:2rem;border:1px solid rgba(255,255,255,0.14)">Public</span>
+          <span style="background:rgba(255,255,255,0.1);color:rgba(255,255,255,0.78);font-size:0.66rem;padding:0.26rem 0.7rem;border-radius:2rem;border:1px solid rgba(255,255,255,0.14)">Business Owners</span>
+          <span style="background:rgba(255,255,255,0.1);color:rgba(255,255,255,0.78);font-size:0.66rem;padding:0.26rem 0.7rem;border-radius:2rem;border:1px solid rgba(255,255,255,0.14)">Healthcare Professionals</span>
+          <span style="background:rgba(255,255,255,0.1);color:rgba(255,255,255,0.78);font-size:0.66rem;padding:0.26rem 0.7rem;border-radius:2rem;border:1px solid rgba(255,255,255,0.14)">Young People</span>
+        </div>
+        <a href="mailto:support@mindbodysynergycic.org?subject=Take%20A%20Breath%20Event" class="btn-light">Reserve Your Space →</a>
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:0.6rem">
+        <div style="border-radius:0.7rem;overflow:hidden;aspect-ratio:4/3;background:rgba(255,255,255,0.08)"><img src="https://static.wixstatic.com/media/f3cbbf_97ecceffa05249aa9b4f47d972297e2a~mv2.jpeg/v1/fill/w_480,h_360,al_c,q_85,enc_avif,quality_auto/f3cbbf_97ecceffa05249aa9b4f47d972297e2a~mv2.jpeg" alt="5th Breath Café" style="width:100%;height:100%;object-fit:cover;display:block" onerror="this.parentNode.innerHTML='<div style=\'height:100%;display:flex;align-items:center;justify-content:center;color:rgba(255,255,255,0.35);font-size:0.78rem;padding:0.5rem;text-align:center\'>5th Breath Café</div>'"></div>
+        <div style="border-radius:0.7rem;overflow:hidden;aspect-ratio:4/3;background:rgba(255,255,255,0.08)"><img src="https://static.wixstatic.com/media/f3cbbf_997b275720264607b451ceca71eca393~mv2.jpeg/v1/fill/w_480,h_360,al_c,q_85,enc_avif,quality_auto/f3cbbf_997b275720264607b451ceca71eca393~mv2.jpeg" alt="3rd Breath Café" style="width:100%;height:100%;object-fit:cover;display:block" onerror="this.parentNode.innerHTML='<div style=\'height:100%;display:flex;align-items:center;justify-content:center;color:rgba(255,255,255,0.35);font-size:0.78rem;padding:0.5rem;text-align:center\'>3rd Breath Café</div>'"></div>
+      </div>
+    </div>
+    <!-- 3 cards -->
+    <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:1rem;margin-bottom:2rem" class="events-3col">
+      <div class="event-card"><div class="event-date-bar" style="background:var(--sage)"><div><div class="date">TBC</div><div class="month">Upcoming</div></div><span class="type-pill">Workshop</span></div><div style="display:grid;grid-template-columns:1fr 1fr;gap:0.38rem;padding:0.65rem 0.65rem 0"><div style="border-radius:0.4rem;overflow:hidden;aspect-ratio:1;background:var(--sage-light)"><img src="https://static.wixstatic.com/media/f3cbbf_a517a645a48b4300ab4bc82f6925bf7f~mv2.jpeg/v1/fill/w_300,h_300,al_c,q_85,enc_avif,quality_auto/f3cbbf_a517a645a48b4300ab4bc82f6925bf7f~mv2.jpeg" alt="Canvas Breath Art" style="width:100%;height:100%;object-fit:cover;display:block" onerror="this.style.display='none'"></div><div style="border-radius:0.4rem;overflow:hidden;aspect-ratio:1;background:var(--sage-light)"><img src="https://static.wixstatic.com/media/f3cbbf_9b0580b836754bf78c4d31ad2e0713b9~mv2.jpeg/v1/fill/w_300,h_300,al_c,q_85,enc_avif,quality_auto/f3cbbf_9b0580b836754bf78c4d31ad2e0713b9~mv2.jpeg" alt="Canvas Breath Art 2" style="width:100%;height:100%;object-fit:cover;display:block" onerror="this.style.display='none'"></div></div><div class="event-body"><div class="event-title">Canvas Breath Art</div><div class="event-meta">📍 Gloucester · Sip &amp; Paint</div><p class="event-desc">Breath meets art — Infinity Art, Canvas Lung Emotion Art, and Breath-to-Brush guided creativity for mindful art lovers and healthcare professionals.</p></div></div>
+      <div class="event-card"><div class="event-date-bar" style="background:var(--clay)"><div><div class="date">5th</div><div class="month">Edition</div></div><span class="type-pill">Community</span></div><div style="padding:0.65rem 0.65rem 0"><div style="border-radius:0.4rem;overflow:hidden;height:115px;background:var(--clay-light)"><img src="https://static.wixstatic.com/media/f3cbbf_97ecceffa05249aa9b4f47d972297e2a~mv2.jpeg/v1/fill/w_600,h_230,al_c,q_85,enc_avif,quality_auto/f3cbbf_97ecceffa05249aa9b4f47d972297e2a~mv2.jpeg" alt="5th Breath Café" style="width:100%;height:100%;object-fit:cover;display:block" onerror="this.parentNode.innerHTML='<div style=\'height:115px;display:flex;align-items:center;justify-content:center;font-size:2rem\'>☕</div>'"></div></div><div class="event-body"><div class="event-title">Breath Café</div><div class="event-meta">📍 Gloucester &amp; Online · Tele-Therapies Ltd</div><p class="event-desc">Complimentary coffee or tea while exploring the vital connection between breath, mind, and lung health. 5 community editions and counting.</p></div></div>
+      <div class="event-card"><div class="event-date-bar" style="background:var(--sky)"><div><div class="date">3rd</div><div class="month">Session · Jul 2025</div></div><span class="type-pill">Awareness</span></div><div style="padding:0.65rem 0.65rem 0"><div style="border-radius:0.4rem;overflow:hidden;height:115px;background:var(--sky-light)"><img src="https://static.wixstatic.com/media/f3cbbf_70c2dd5651cb4dacb1f4e74c655e3f3e~mv2.png/v1/fill/w_600,h_230,al_c,q_85,enc_avif,quality_auto/f3cbbf_70c2dd5651cb4dacb1f4e74c655e3f3e~mv2.png" alt="Lung &amp; Mental Health Awareness" style="width:100%;height:100%;object-fit:cover;display:block" onerror="this.parentNode.innerHTML='<div style=\'height:115px;display:flex;align-items:center;justify-content:center;font-size:2rem\'>🫁</div>'"></div></div><div class="event-body"><div class="event-title">Lung &amp; Mental Health Awareness</div><div class="event-meta">📅 20 July 2025</div><p class="event-desc">Community awareness raising the link between respiratory health and mental wellbeing — reducing stigma UK-wide.</p></div></div>
+    </div>
+    <!-- Full gallery -->
+    <p style="font-size:0.66rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--mist);margin-bottom:0.8rem;font-weight:500">Photo Gallery — All Events</p>
+    <div class="gallery-grid">
+      <div class="gallery-item"><div class="gallery-img"><img src="https://static.wixstatic.com/media/f3cbbf_a517a645a48b4300ab4bc82f6925bf7f~mv2.jpeg/v1/fill/w_600,h_370,al_c,q_85,enc_avif,quality_auto/f3cbbf_a517a645a48b4300ab4bc82f6925bf7f~mv2.jpeg" alt="Canvas Breath Art" onerror="this.parentNode.innerHTML='<div style=\'height:185px;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:0.4rem\'><span style=\'font-size:2rem\'>🎨</span><span style=\'font-size:0.7rem;color:var(--mist)\'>Canvas Breath Art</span></div>'"></div><p class="gallery-caption">Canvas Breath Art</p></div>
+      <div class="gallery-item"><div class="gallery-img" style="background:var(--sage-light)"><img src="https://static.wixstatic.com/media/f3cbbf_9b0580b836754bf78c4d31ad2e0713b9~mv2.jpeg/v1/fill/w_600,h_370,al_c,q_85,enc_avif,quality_auto/f3cbbf_9b0580b836754bf78c4d31ad2e0713b9~mv2.jpeg" alt="Canvas Breath Art 2" onerror="this.parentNode.innerHTML='<div style=\'height:185px;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:0.4rem\'><span style=\'font-size:2rem\'>🎨</span><span style=\'font-size:0.7rem;color:var(--mist)\'>Canvas Breath Art</span></div>'"></div><p class="gallery-caption">Canvas Breath Art</p></div>
+      <div class="gallery-item"><div class="gallery-img" style="background:var(--clay-light)"><img src="https://static.wixstatic.com/media/f3cbbf_e539498caf0b40cd9a2d839520e6c541~mv2.jpeg/v1/fill/w_600,h_370,al_c,q_85,enc_avif,quality_auto/f3cbbf_e539498caf0b40cd9a2d839520e6c541~mv2.jpeg" alt="Canvas Breath Café" onerror="this.parentNode.innerHTML='<div style=\'height:185px;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:0.4rem\'><span style=\'font-size:2rem\'>☕</span><span style=\'font-size:0.7rem;color:var(--mist)\'>Canvas Breath Café</span></div>'"></div><p class="gallery-caption">Canvas Breath Café</p></div>
+      <div class="gallery-item"><div class="gallery-img" style="background:var(--clay-light)"><img src="https://static.wixstatic.com/media/f3cbbf_97ecceffa05249aa9b4f47d972297e2a~mv2.jpeg/v1/fill/w_600,h_370,al_c,q_85,enc_avif,quality_auto/f3cbbf_97ecceffa05249aa9b4f47d972297e2a~mv2.jpeg" alt="5th Breath Café" onerror="this.parentNode.innerHTML='<div style=\'height:185px;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:0.4rem\'><span style=\'font-size:2rem\'>☕</span><span style=\'font-size:0.7rem;color:var(--mist)\'>5th Breath Café</span></div>'"></div><p class="gallery-caption">5th Breath Café</p></div>
+      <div class="gallery-item"><div class="gallery-img" style="background:var(--clay-light)"><img src="https://static.wixstatic.com/media/f3cbbf_997b275720264607b451ceca71eca393~mv2.jpeg/v1/fill/w_600,h_370,al_c,q_85,enc_avif,quality_auto/f3cbbf_997b275720264607b451ceca71eca393~mv2.jpeg" alt="3rd Breath Café" onerror="this.parentNode.innerHTML='<div style=\'height:185px;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:0.4rem\'><span style=\'font-size:2rem\'>☕</span><span style=\'font-size:0.7rem;color:var(--mist)\'>3rd Breath Café</span></div>'"></div><p class="gallery-caption">3rd Breath Café</p></div>
+      <div class="gallery-item"><div class="gallery-img" style="background:var(--sky-light)"><img src="https://static.wixstatic.com/media/f3cbbf_70c2dd5651cb4dacb1f4e74c655e3f3e~mv2.png/v1/fill/w_600,h_370,al_c,q_85,enc_avif,quality_auto/f3cbbf_70c2dd5651cb4dacb1f4e74c655e3f3e~mv2.png" alt="Lung &amp; Mental Health Awareness" onerror="this.parentNode.innerHTML='<div style=\'height:185px;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:0.4rem\'><span style=\'font-size:2rem\'>🫁</span><span style=\'font-size:0.7rem;color:var(--mist)\'>Lung &amp; Mental Health</span></div>'"></div><p class="gallery-caption">Lung &amp; Mental Health Awareness · Jul 2025</p></div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════ BLOG ══════════ -->
+<div class="page" id="page-blog">
+  <div class="page-inner">
+    <div style="display:flex;justify-content:space-between;align-items:flex-end;margin-bottom:1.9rem;flex-wrap:wrap;gap:1rem">
+      <div><div class="section-label">Latest Thinking</div><h2 class="section-title">From the <em>Blog</em></h2></div>
+      <div style="display:flex;gap:0.65rem;align-items:center;flex-wrap:wrap">
+        <!-- Wix Blog button — links directly to live Wix blog -->
+        <a href="https://www.mindbodysynergycic.org/blog" target="_blank" style="display:flex;align-items:center;gap:0.45rem;background:var(--sage-dark);color:#fff;padding:0.55rem 1.1rem;border-radius:2rem;font-size:0.78rem;font-weight:500;text-decoration:none;transition:background 0.2s" onmouseover="this.style.background='var(--sage)'" onmouseout="this.style.background='var(--sage-dark)'">
+          <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><rect x="0.5" y="0.5" width="13" height="13" rx="2.5" stroke="white" stroke-opacity="0.6"/><path d="M3 4h8M3 7h8M3 10h5" stroke="white" stroke-width="1.2" stroke-linecap="round"/></svg>
+          Read on Wix Blog
+        </a>
+        <a href="https://www.mindbodysynergycic.org/blog" target="_blank" class="view-all-link">All Articles →</a>
+      </div>
+    </div>
+    <div class="blog-grid">
+      <div class="blog-card"><div class="blog-img">🌿</div><div class="blog-body"><div class="blog-cat">Holistic Wellness</div><div class="blog-title">Exploring the CIC Holistic Wellness Services of Mind Body Synergy</div><p class="blog-excerpt">How integrating mind and body wellness practices offers a powerful way to support overall health for those with chronic respiratory conditions.</p><div class="blog-footer"><span class="blog-author">Apr 2025 · 4 min</span><a href="https://www.mindbodysynergycic.org/post/exploring-the-cic-holistic-wellness-services-of-mind-body-synergy" class="blog-read" target="_blank">Read →</a></div></div></div>
+      <div class="blog-card"><div class="blog-img clay-bg">🌬️</div><div class="blog-body"><div class="blog-cat">Breathwork Science</div><div class="blog-title">The Science Behind Breathwork: Training Calm or Chasing Intensity?</div><p class="blog-excerpt">Not all breathwork aims for the same outcome. What different breathing styles actually do to your nervous system and brain.</p><div class="blog-footer"><span class="blog-author">Apr 2025 · 3 min</span><a href="https://www.mindbodysynergycic.org/post/the-science-behind-breathwork-are-you-training-calm-or-chasing-intensity" class="blog-read" target="_blank">Read →</a></div></div></div>
+      <div class="blog-card"><div class="blog-img sky-bg">💻</div><div class="blog-body"><div class="blog-cat">Education</div><div class="blog-title">Advantages of Online Courses on Holistic Health &amp; Respiratory Training</div><p class="blog-excerpt">How digital education is transforming access to holistic health knowledge for those managing respiratory and mental health challenges.</p><div class="blog-footer"><span class="blog-author">Apr 2025 · 4 min</span><a href="https://www.mindbodysynergycic.org/post/advantages-of-online-courses-on-holistic-health-respiratory-health-online-training" class="blog-read" target="_blank">Read →</a></div></div></div>
+      <div class="blog-card"><div class="blog-img" style="background:var(--sage-light)">🌱</div><div class="blog-body"><div class="blog-cat">Respiratory Health</div><div class="blog-title">Natural Respiratory Health Techniques for Holistic Wellness in the UK</div><p class="blog-excerpt">Practical techniques for improving lung function and quality of life through a holistic approach to respiratory health.</p><div class="blog-footer"><span class="blog-author">Apr 2025 · 4 min</span><a href="https://www.mindbodysynergycic.org/post/natural-respiratory-health-techniques-for-holistic-respiratory-wellness-in-the-uk" class="blog-read" target="_blank">Read →</a></div></div></div>
+      <div class="blog-card"><div class="blog-img" style="background:#f0e6f4">🧘</div><div class="blog-body"><div class="blog-cat">Anxiety &amp; COPD</div><div class="blog-title">How to Manage Anxiety with COPD</div><p class="blog-excerpt">Living with COPD often means managing anxiety too. Evidence-based strategies for maintaining mental wellbeing alongside respiratory conditions.</p><div class="blog-footer"><span class="blog-author">MindBody Synergy</span><a href="https://www.mindbodysynergycic.org/blog" class="blog-read" target="_blank">Read →</a></div></div></div>
+      <div class="blog-card" style="background:var(--sage-dark);border-color:var(--sage-dark)"><div style="padding:1.6rem;display:flex;flex-direction:column;height:100%;justify-content:space-between"><div><p style="font-size:0.65rem;color:rgba(255,255,255,0.35);letter-spacing:0.1em;text-transform:uppercase;margin-bottom:0.65rem">Subscribe</p><h3 style="font-family:var(--serif);font-size:1.38rem;font-weight:300;color:#fff;line-height:1.35;margin-bottom:0.65rem">Never miss an article or event</h3><p style="font-size:0.78rem;color:rgba(255,255,255,0.45);line-height:1.65">Join our mailing list for blog posts, event announcements, and wellness resources.</p></div><div style="margin-top:1.35rem"><a href="https://lp.constantcontactpages.com/sl/7r16jZz" target="_blank" style="display:block;width:100%;background:var(--sage);border:none;border-radius:0.45rem;padding:0.72rem;color:#fff;font-size:0.8rem;font-family:var(--sans);font-weight:500;text-align:center;text-decoration:none;transition:background 0.2s" onmouseover="this.style.background='var(--sage-dark)'" onmouseout="this.style.background='var(--sage)'">Join Our Mailing List →</a></div></div></div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════ FOUNDER ══════════ -->
+<div class="page" id="page-founder">
+  <div class="page-inner" style="background:var(--cream)">
+    <div class="founder-grid">
+      <div>
+        <img src="https://static.wixstatic.com/media/f3cbbf_bd899aed0c36466fab2308acc3eaa634~mv2.png/v1/crop/x_113,y_0,w_889,h_1080/fill/w_550,h_670,al_c,q_90,enc_avif,quality_auto/f3cbbf_bd899aed0c36466fab2308acc3eaa634~mv2.png" alt="Dr. Devi Sundar, Founder of MindBody Synergy CIC" style="width:100%;border-radius:1.1rem 1.1rem 5rem 1.1rem;object-fit:cover;display:block" onerror="this.style.display='none'">
+        <div class="founder-name-bar"><p>Dr. Devi Sundar</p><p>PhD · MSc · MS · FHEA · Integrative Mind-Body Consultant</p></div>
+      </div>
+      <div>
+        <div class="section-label">Our Founder &amp; Our Story</div>
+        <h2 class="section-title">A vision born from <em>experience</em></h2>
+        <div class="divider"></div>
+        <div class="founder-quote">"I wanted to serve individuals facing chronic respiratory diseases and mental health challenges — recognising the urgent need for a holistic, integrated approach to care."</div>
+        <p style="font-size:0.86rem;color:var(--mist);line-height:1.8;margin-bottom:1.6rem">Dr. Devi Sundar founded MindBody Synergy CIC from both personal and professional experience. Witnessing the struggles of those affected by COPD, asthma, pulmonary fibrosis, anxiety, depression, PTSD, and workplace psychological injuries, she built an organisation dedicated to holistic, community-centred care — bridging the gap between conventional healthcare and whole-person wellness.</p>
+        <div class="mvv-card" style="border-left:3px solid var(--sage)"><p class="mvv-label" style="color:var(--sage)">Mission</p><p>We believe health and well-being are fundamental human rights, available to all regardless of background. Our mission is to create lasting change by supporting individuals and communities facing chronic respiratory diseases, mental health struggles, and workplace injuries — through preventative health, education, and community empowerment.</p></div>
+        <div class="mvv-card" style="border-left:3px solid var(--clay)"><p class="mvv-label" style="color:var(--clay)">Vision</p><p>To provide holistic, community-based wellness programmes that improve physical and emotional health while promoting long-term sustainability — building a healthier, more inclusive society where individuals can manage their health and thrive.</p></div>
+        <div class="mvv-card" style="border-left:3px solid var(--sky)"><p class="mvv-label" style="color:var(--sky)">Core Values</p><div class="value-row"><span class="value-label">🌿 Holistic Wellness</span><span class="value-desc">Integrating physical, emotional, and mental well-being in every programme.</span></div><div class="value-row"><span class="value-label">📚 Education &amp; Empowerment</span><span class="value-desc">Offering learning opportunities for professionals, caregivers, and the community.</span></div><div class="value-row"><span class="value-label">🤝 Accessibility</span><span class="value-desc">Ensuring support is always available to underserved and marginalised populations.</span></div></div>
+        <a href="https://www.devisundar.org/" target="_blank" class="btn-primary" style="margin-top:1.35rem">Visit Dr. Devi Sundar's Website →</a>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════ TRAINING ══════════ -->
+<div class="page" id="page-training">
+  <div class="page-inner" style="background:var(--sky-light)">
+
+    <!-- TOP GRID: courses + booking CTA -->
+    <div class="training-grid">
+      <div>
+        <div class="section-label">Professional Development</div>
+        <h2 class="section-title">Educational <em>Training</em></h2>
+        <div class="divider" style="background:var(--sky)"></div>
+        <p class="section-sub">CPD-accredited programmes for professionals, caregivers, and the public — online and in-person.</p>
+        <div class="training-list">
+          <!-- Wix programme link from /training page -->
+          <div class="training-item" style="border-color:var(--sky);background:var(--sky-light)">
+            <div class="t-num" style="color:var(--sage)">★</div>
+            <div style="flex:1">
+              <h4 style="color:var(--sage-dark)">Empowering Health: Managing Chronic Conditions</h4>
+              <p style="margin-bottom:0.5rem">A structured programme tackling the physical, mental, and social dimensions of living with long-term conditions. £35.00 per participant.</p>
+              <a href="https://www.mindbodysynergycic.org/challenge-page/3f6d2766-77fa-4dce-95a6-8651b1d0d886?programId=3f6d2766-77fa-4dce-95a6-8651b1d0d886" target="_blank" style="font-size:0.75rem;font-weight:500;color:var(--sky);text-decoration:none;border:1px solid var(--sky);padding:0.28rem 0.7rem;border-radius:2rem;display:inline-block">View Programme → £35</a>
+            </div>
+          </div>
+          <div class="training-item"><div class="t-num">01</div><div><h4>Respiratory Health Online Course</h4><p>Holistic approaches to managing and understanding chronic respiratory conditions.</p></div></div>
+          <div class="training-item"><div class="t-num">02</div><div><h4>Stop Talking, Start Healing</h4><p>A transformative programme for professionals and individuals seeking deeper healing frameworks.</p></div></div>
+          <div class="training-item"><div class="t-num">03</div><div><h4>Workplace Wellness Workshops</h4><p>CPD-accredited training for employers addressing stress-related disorders and psychological injuries.</p></div></div>
+          <div class="training-item"><div class="t-num">04</div><div><h4>Webinars &amp; Community Outreach</h4><p>Regular online sessions for caregivers, healthcare professionals, and the wider public. Free monthly health webinar.</p></div></div>
+        </div>
+      </div>
+      <div class="training-cta-box">
+        <div style="font-size:2.6rem;margin-bottom:0.8rem">🎓</div>
+        <h3>Ready to Book?</h3>
+        <p>Book a session, training programme, or consultation directly through our online booking system — powered by Wix Bookings.</p>
+        <a href="https://www.mindbodysynergycic.org/bookings" target="_blank" class="btn-sky">Book a Session Online</a>
+        <div class="booking-pills">
+          <a href="https://www.mindbodysynergycic.org/bookings" target="_blank">1:1 Consultations</a>
+          <a href="https://www.mindbodysynergycic.org/bookings" target="_blank">Group Sessions</a>
+          <a href="https://www.mindbodysynergycic.org/bookings" target="_blank">Training Courses</a>
+        </div>
+
+        <!-- CONSTANT CONTACT INTEGRATION PLACEHOLDER -->
+        <div style="margin-top:1.4rem;padding:1.1rem;background:var(--cream);border-radius:0.75rem;border:1px dashed var(--clay);text-align:left">
+          <p style="font-size:0.68rem;font-weight:500;letter-spacing:0.1em;text-transform:uppercase;color:var(--clay);margin-bottom:0.4rem">📧 Newsletter Signup</p>
+          <p style="font-size:0.75rem;color:var(--mist);margin-bottom:0.7rem;line-height:1.6">Subscribe to free health education content, event updates &amp; resources.</p>
+          <a href="https://lp.constantcontactpages.com/sl/7r16jZz" target="_blank" style="display:block;width:100%;background:var(--clay);color:#fff;border:none;border-radius:0.5rem;padding:0.62rem;text-align:center;font-size:0.78rem;font-family:var(--sans);font-weight:500;cursor:pointer;text-decoration:none">Join Our Mailing List →</a>
+        </div>
+
+        <div style="margin-top:1rem;padding-top:1rem;border-top:1px solid var(--cream-dark);text-align:left">
+          <p style="font-size:0.73rem;color:var(--mist);margin-bottom:0.38rem">For organisations &amp; employers:</p>
+          <p style="font-size:0.82rem;font-weight:500;color:var(--sage-dark)">Bespoke partnership packages available</p>
+          <a href="mailto:support@mindbodysynergycic.org" style="font-size:0.76rem;color:var(--sky);text-decoration:none">→ support@mindbodysynergycic.org</a>
+        </div>
+      </div>
+    </div>
+
+    <!-- FREE HEALTH EDUCATION RESOURCES — YouTube Channel -->
+    <div style="margin-top:3rem">
+      <div style="display:flex;justify-content:space-between;align-items:flex-end;margin-bottom:1.5rem;flex-wrap:wrap;gap:0.75rem">
+        <div>
+          <div class="section-label">Free Health Education Resources</div>
+          <h2 class="section-title">Breathe &amp; Thrive <em>on YouTube</em></h2>
+          <div class="divider" style="background:var(--clay)"></div>
+          <p style="font-size:0.88rem;color:var(--mist);max-width:580px;line-height:1.8">Dr. Devi Sundar's free YouTube channel — science meets practical healing. Weekly videos, monthly free health webinars. Covering breathwork, nervous system tools, lung health, mental health, Ayurveda, and mind-body medicine.</p>
+        </div>
+        <a href="https://www.youtube.com/@BreatheThrivewithDevi" target="_blank" style="display:flex;align-items:center;gap:0.6rem;background:#FF0000;color:#fff;padding:0.65rem 1.25rem;border-radius:2rem;font-size:0.82rem;font-weight:500;text-decoration:none;flex-shrink:0;transition:background 0.2s" onmouseover="this.style.background='#cc0000'" onmouseout="this.style.background='#FF0000'">
+          <svg width="18" height="14" viewBox="0 0 18 14" fill="none" xmlns="http://www.w3.org/2000/svg" style="flex-shrink:0"><path d="M17.6 2.2C17.4 1.5 16.8 0.9 16.1 0.7C14.7 0.3 9 0.3 9 0.3C9 0.3 3.3 0.3 1.9 0.7C1.2 0.9 0.6 1.5 0.4 2.2C0 3.7 0 7 0 7C0 7 0 10.3 0.4 11.8C0.6 12.5 1.2 13.1 1.9 13.3C3.3 13.7 9 13.7 9 13.7C9 13.7 14.7 13.7 16.1 13.3C16.8 13.1 17.4 12.5 17.6 11.8C18 10.3 18 7 18 7C18 7 18 3.7 17.6 2.2Z" fill="white" fill-opacity="0.15"/><path d="M17.6 2.2C17.4 1.5 16.8 0.9 16.1 0.7C14.7 0.3 9 0.3 9 0.3C9 0.3 3.3 0.3 1.9 0.7C1.2 0.9 0.6 1.5 0.4 2.2C0 3.7 0 7 0 7C0 7 0 10.3 0.4 11.8C0.6 12.5 1.2 13.1 1.9 13.3C3.3 13.7 9 13.7 9 13.7C9 13.7 14.7 13.7 16.1 13.3C16.8 13.1 17.4 12.5 17.6 11.8C18 10.3 18 7 18 7C18 7 18 3.7 17.6 2.2Z" fill="none"/><path d="M7.2 9.9L11.9 7L7.2 4.1V9.9Z" fill="white"/></svg>
+          Subscribe on YouTube
+        </a>
+      </div>
+
+      <!-- Channel info banner -->
+      <div style="background:var(--sage-dark);border-radius:1rem;padding:1.75rem 2rem;margin-bottom:1.5rem;display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:1rem">
+        <div style="text-align:center;padding:0.75rem;background:rgba(255,255,255,0.07);border-radius:0.65rem">
+          <p style="font-size:1.6rem;margin-bottom:0.25rem">🧠</p>
+          <p style="font-size:0.78rem;font-weight:500;color:#fff;margin-bottom:0.2rem">Science Breakdowns</p>
+          <p style="font-size:0.7rem;color:rgba(255,255,255,0.45)">Simple neuroscience &amp; psychology</p>
+        </div>
+        <div style="text-align:center;padding:0.75rem;background:rgba(255,255,255,0.07);border-radius:0.65rem">
+          <p style="font-size:1.6rem;margin-bottom:0.25rem">🌬️</p>
+          <p style="font-size:0.78rem;font-weight:500;color:#fff;margin-bottom:0.2rem">Breathwork Tools</p>
+          <p style="font-size:0.7rem;color:rgba(255,255,255,0.45)">Nervous system &amp; stress relief</p>
+        </div>
+        <div style="text-align:center;padding:0.75rem;background:rgba(255,255,255,0.07);border-radius:0.65rem">
+          <p style="font-size:1.6rem;margin-bottom:0.25rem">🏥</p>
+          <p style="font-size:0.78rem;font-weight:500;color:#fff;margin-bottom:0.2rem">Lung &amp; Occupational Health</p>
+          <p style="font-size:0.7rem;color:rgba(255,255,255,0.45)">Respiratory &amp; workplace insights</p>
+        </div>
+        <div style="text-align:center;padding:0.75rem;background:rgba(255,255,255,0.07);border-radius:0.65rem">
+          <p style="font-size:1.6rem;margin-bottom:0.25rem">🌿</p>
+          <p style="font-size:0.78rem;font-weight:500;color:#fff;margin-bottom:0.2rem">Mind-Body &amp; Ayurveda</p>
+          <p style="font-size:0.7rem;color:rgba(255,255,255,0.45)">Holistic wellness practices</p>
+        </div>
+      </div>
+
+      <!-- Featured video — clickable channel card -->
+      <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:1rem;margin-bottom:1.5rem">
+        <div style="background:#fff;border:1px solid var(--cream-dark);border-radius:0.875rem;overflow:hidden">
+          <a href="https://www.youtube.com/@BreatheThrivewithDevi" target="_blank" style="display:block;text-decoration:none">
+            <div style="background:#0f0f0f;aspect-ratio:16/9;display:flex;flex-direction:column;align-items:center;justify-content:center;position:relative;overflow:hidden">
+              <img src="https://i.ytimg.com/vi/QHkm6z4oMaY/maxresdefault.jpg" alt="Breathe &amp; Thrive" style="position:absolute;top:0;left:0;width:100%;height:100%;object-fit:cover;opacity:0.5" onerror="this.style.display='none'">
+              <div style="position:relative;z-index:1;text-align:center">
+                <div style="width:52px;height:38px;background:#FF0000;border-radius:9px;display:flex;align-items:center;justify-content:center;margin:0 auto 0.6rem">
+                  <svg width="18" height="14" viewBox="0 0 18 14" fill="white"><path d="M7 10.5V3.5L13.5 7L7 10.5Z"/></svg>
+                </div>
+                <p style="color:#fff;font-size:0.8rem;font-weight:500">Watch on YouTube</p>
+              </div>
+            </div>
+          </a>
+          <div style="padding:0.85rem">
+            <p style="font-size:0.68rem;font-weight:500;letter-spacing:0.08em;text-transform:uppercase;color:var(--sage);margin-bottom:0.3rem">Free Videos — Weekly Uploads</p>
+            <p style="font-size:0.82rem;font-weight:500;color:var(--sage-dark);line-height:1.35">Breathe &amp; Thrive with Dr. Devi Sundar</p>
+          </div>
+        </div>
+        <div style="background:var(--cream);border:1px solid var(--cream-dark);border-radius:0.875rem;padding:1.5rem;display:flex;flex-direction:column;justify-content:space-between">
+          <div>
+            <p style="font-size:0.68rem;font-weight:500;letter-spacing:0.08em;text-transform:uppercase;color:var(--clay);margin-bottom:0.5rem">About the Channel</p>
+            <p style="font-family:var(--serif);font-size:1.05rem;font-style:italic;color:var(--sage-dark);line-height:1.45;margin-bottom:0.75rem">"Not just another health channel — science meets practical healing."</p>
+            <p style="font-size:0.8rem;color:var(--mist);line-height:1.7">Dr. Devi Sundar blends neuroscience, psychology, respiratory medicine, psychoneuroimmunology, Ayurveda, and occupational health — 23+ years of expertise, freely shared.</p>
+          </div>
+          <a href="https://www.youtube.com/@BreatheThrivewithDevi" target="_blank" style="margin-top:1rem;display:block;text-align:center;background:#FF0000;color:#fff;padding:0.6rem 1rem;border-radius:2rem;font-size:0.78rem;font-weight:500;text-decoration:none">Watch Free Videos →</a>
+        </div>
+        <div style="background:var(--sage-dark);border-radius:0.875rem;padding:1.5rem;display:flex;flex-direction:column;justify-content:space-between">
+          <div>
+            <p style="font-size:0.68rem;font-weight:500;letter-spacing:0.08em;text-transform:uppercase;color:rgba(255,255,255,0.38);margin-bottom:0.5rem">New Book</p>
+            <h4 style="font-family:var(--serif);font-size:1.25rem;color:#fff;margin-bottom:0.5rem;line-height:1.3">"Breath Beyond Illness"</h4>
+            <p style="font-size:0.8rem;color:rgba(255,255,255,0.55);line-height:1.7">On breath, recovery, resilience &amp; health. By Dr. Devi Sundar — available through the YouTube channel and website.</p>
+          </div>
+          <div style="margin-top:1rem;display:flex;flex-direction:column;gap:0.5rem">
+            <a href="https://www.youtube.com/@BreatheThrivewithDevi" target="_blank" style="display:block;text-align:center;background:rgba(255,255,255,0.12);color:#fff;padding:0.55rem 1rem;border-radius:2rem;font-size:0.77rem;font-weight:500;text-decoration:none;border:1px solid rgba(255,255,255,0.2)">Visit Channel →</a>
+            <a href="https://www.devisundar.org/" target="_blank" style="display:block;text-align:center;background:var(--sage);color:#fff;padding:0.55rem 1rem;border-radius:2rem;font-size:0.77rem;font-weight:500;text-decoration:none">Dr. Devi Sundar's Website →</a>
+          </div>
+        </div>
+      </div>
+
+      <!-- YouTube subscribe CTA strip -->
+      <div style="background:var(--cream);border:1px solid var(--cream-dark);border-radius:0.875rem;padding:1.25rem 1.75rem;display:flex;align-items:center;justify-content:space-between;gap:1.5rem;flex-wrap:wrap">
+        <div>
+          <p style="font-weight:500;font-size:0.9rem;color:var(--sage-dark);margin-bottom:0.2rem">Free monthly health webinar — every month, online</p>
+          <p style="font-size:0.78rem;color:var(--mist)">Upload every week · Breathwork UK · Mindful breathing · Lung health · Mind-body medicine · Ayurveda</p>
+        </div>
+        <a href="https://www.youtube.com/@BreatheThrivewithDevi?sub_confirmation=1" target="_blank" style="display:flex;align-items:center;gap:0.5rem;background:#FF0000;color:#fff;padding:0.65rem 1.35rem;border-radius:2rem;font-size:0.82rem;font-weight:500;text-decoration:none;white-space:nowrap;flex-shrink:0">
+          <svg width="16" height="12" viewBox="0 0 18 14" fill="white"><path d="M7.2 9.9L11.9 7L7.2 4.1V9.9Z"/><rect width="18" height="14" rx="3" fill="none"/></svg>
+          Subscribe Free
+        </a>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- ══════════ GET INVOLVED ══════════ -->
+<div class="page" id="page-involve">
+  <div class="page-inner">
+    <div class="involve-hero">
+      <div class="section-label" style="color:rgba(255,255,255,0.32)">Join Us</div>
+      <h2 class="section-title" style="color:#fff;margin:0 auto 0.7rem;max-width:540px">Many ways to make a <em style="color:var(--sage-light)">difference</em></h2>
+      <p class="section-sub" style="color:rgba(255,255,255,0.48);margin:0 auto 1.85rem">Your support helps us provide life-changing services to individuals struggling with chronic respiratory diseases, mental health challenges, and workplace psychological injuries.</p>
+      <div class="involve-cards">
+        <div class="involve-card"><div class="i-icon">🤝</div><h4>Partner With Us</h4><p>Local charities, NGOs, healthcare organisations, and employers — if you share our vision, let's create lasting impact together.</p></div>
+        <div class="involve-card"><div class="i-icon">🙋</div><h4>Volunteer</h4><p>Share your time and skills to support workshops, community events, and advocacy efforts. Dedicated individuals make everything possible.</p></div>
+        <div class="involve-card"><div class="i-icon">💼</div><h4>Careers</h4><p>Explore openings for therapists, trainers, mental health specialists, and administrative roles. Join our growing team.</p></div>
+      </div>
+      <div class="involve-actions">
+        <a href="mailto:support@mindbodysynergycic.org" class="btn-primary">Contact Us Today</a>
+        <a href="https://www.mindbodysynergycic.org/getinvolved" target="_blank" class="btn-secondary" style="border-color:rgba(255,255,255,0.3);color:rgba(255,255,255,0.78)">Full Page →</a>
+      </div>
+    </div>
+
+    <!-- DONATE + SUPPORT SECTION -->
+    <div style="display:grid;grid-template-columns:1.2fr 1fr;gap:1.5rem;margin-bottom:1.5rem">
+      <div style="background:var(--cream);border:1px solid var(--cream-dark);border-radius:1rem;padding:1.75rem">
+        <p style="font-size:0.68rem;font-weight:500;letter-spacing:0.13em;text-transform:uppercase;color:var(--sage);margin-bottom:0.55rem">Support the Cause</p>
+        <h3 style="font-family:var(--serif);font-size:1.5rem;color:var(--sage-dark);margin-bottom:0.75rem;font-weight:400">Your generosity allows us to:</h3>
+        <div style="display:flex;flex-direction:column;gap:0.5rem;margin-bottom:1.5rem">
+          <div style="display:flex;gap:0.65rem;align-items:flex-start"><span style="color:var(--sage);font-size:0.9rem;margin-top:0.1rem">✔</span><span style="font-size:0.84rem;color:var(--bark);line-height:1.65">Provide <strong>subsidised therapy</strong> for individuals who cannot afford treatment.</span></div>
+          <div style="display:flex;gap:0.65rem;align-items:flex-start"><span style="color:var(--sage);font-size:0.9rem;margin-top:0.1rem">✔</span><span style="font-size:0.84rem;color:var(--bark);line-height:1.65">Offer <strong>free courses and training</strong> to caregivers, employers, and healthcare professionals.</span></div>
+          <div style="display:flex;gap:0.65rem;align-items:flex-start"><span style="color:var(--sage);font-size:0.9rem;margin-top:0.1rem">✔</span><span style="font-size:0.84rem;color:var(--bark);line-height:1.65">Expand <strong>charitable collaborations</strong> to reach more communities in need.</span></div>
+          <div style="display:flex;gap:0.65rem;align-items:flex-start"><span style="color:var(--sage);font-size:0.9rem;margin-top:0.1rem">✔</span><span style="font-size:0.84rem;color:var(--bark);line-height:1.65">Fund <strong>community events</strong> that reduce stigma around lung and mental health.</span></div>
+        </div>
+        <div style="display:flex;gap:0.6rem;flex-wrap:wrap">
+          <span style="background:var(--sage-light);color:var(--sage-dark);font-size:0.72rem;font-weight:500;padding:0.3rem 0.8rem;border-radius:2rem">One-time donations</span>
+          <span style="background:var(--sage-light);color:var(--sage-dark);font-size:0.72rem;font-weight:500;padding:0.3rem 0.8rem;border-radius:2rem">Monthly support</span>
+          <span style="background:var(--sage-light);color:var(--sage-dark);font-size:0.72rem;font-weight:500;padding:0.3rem 0.8rem;border-radius:2rem">Corporate sponsorships</span>
+          <span style="background:var(--sage-light);color:var(--sage-dark);font-size:0.72rem;font-weight:500;padding:0.3rem 0.8rem;border-radius:2rem">Sponsor a Project</span>
+        </div>
+      </div>
+      <div style="background:var(--sage-dark);border-radius:1rem;padding:1.75rem;display:flex;flex-direction:column;justify-content:space-between">
+        <div>
+          <p style="font-size:0.68rem;font-weight:500;letter-spacing:0.13em;text-transform:uppercase;color:rgba(255,255,255,0.38);margin-bottom:0.5rem">Donate</p>
+          <h3 style="font-family:var(--serif);font-size:1.45rem;color:#fff;font-weight:300;margin-bottom:0.75rem;line-height:1.3">Together, we can make holistic healthcare accessible for all</h3>
+          <p style="font-size:0.8rem;color:rgba(255,255,255,0.5);line-height:1.72;margin-bottom:1.25rem">Every contribution — big or small — helps improve lives and strengthen our community. Donate today and be part of the change!</p>
+        </div>
+        <div style="display:flex;flex-direction:column;gap:0.55rem">
+          <a href="mailto:support@mindbodysynergycic.org?subject=Donation%20Enquiry" style="display:block;text-align:center;background:var(--sage);color:#fff;padding:0.7rem 1.25rem;border-radius:2rem;font-size:0.82rem;font-weight:500;text-decoration:none">Donate Now →</a>
+          <a href="mailto:support@mindbodysynergycic.org?subject=Sponsorship%20Enquiry" style="display:block;text-align:center;background:rgba(255,255,255,0.1);color:rgba(255,255,255,0.82);padding:0.7rem 1.25rem;border-radius:2rem;font-size:0.82rem;font-weight:500;text-decoration:none;border:1px solid rgba(255,255,255,0.18)">Sponsor a Project →</a>
+        </div>
+      </div>
+    </div>
+
+    <!-- CONTACT FORM + PARTNERS -->
+    <div class="partner-grid">
+      <div class="partner-card"><h4>🏥 Healthcare Organisations</h4><p>Enhancing accessibility to respiratory and mental health services — working together to reach more patients and communities across the UK.</p></div>
+      <div class="partner-card"><h4>🏢 Employers &amp; Businesses</h4><p>Promoting workplace wellness and holistic interventions — helping your team thrive through evidence-based programmes and CPD training.</p></div>
+      <div class="partner-card"><h4>🤲 Local Charities &amp; NGOs</h4><p>Strengthening support networks and expanding resources — if you share our vision, let's work together for lasting community impact.</p></div>
+      <div class="partner-card" style="background:var(--sage-dark);border-color:var(--sage-dark)">
+        <h4 style="color:#fff;margin-bottom:0.75rem">📬 Send Us a Message</h4>
+        <p style="color:rgba(255,255,255,0.48);margin-bottom:0.85rem;font-size:0.78rem;line-height:1.6">Fill in your details and we'll get back to you to discuss how we can work together.</p>
+        <div style="display:flex;flex-direction:column;gap:0.42rem;margin-bottom:0.65rem">
+          <input placeholder="First Name" style="background:rgba(255,255,255,0.1);border:1px solid rgba(255,255,255,0.17);border-radius:0.4rem;padding:0.55rem 0.75rem;color:#fff;font-size:0.78rem;font-family:var(--sans);outline:none;width:100%">
+          <input placeholder="Email" type="email" style="background:rgba(255,255,255,0.1);border:1px solid rgba(255,255,255,0.17);border-radius:0.4rem;padding:0.55rem 0.75rem;color:#fff;font-size:0.78rem;font-family:var(--sans);outline:none;width:100%">
+          <textarea placeholder="Message" rows="2" style="background:rgba(255,255,255,0.1);border:1px solid rgba(255,255,255,0.17);border-radius:0.4rem;padding:0.55rem 0.75rem;color:#fff;font-size:0.78rem;font-family:var(--sans);outline:none;width:100%;resize:none"></textarea>
+        </div>
+        <a href="mailto:support@mindbodysynergycic.org" style="display:block;text-align:center;background:var(--sage);color:#fff;padding:0.55rem 1rem;border-radius:2rem;font-size:0.78rem;font-weight:500;text-decoration:none">Send →</a>
+        <p style="font-size:0.65rem;color:rgba(255,255,255,0.3);margin-top:0.5rem;text-align:center">⚙ Connect Wix Forms to receive submissions in your Wix dashboard</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+</div><!-- end pages-wrapper -->
+
+<script>
+const PAGES = ['home','about','services','approach','events','blog','founder','training','involve'];
+const LABELS = ['Home','About','Services','Approach','Events','Blog','Founder','Training','Involved'];
+let current = 'home';
+
+// Build dots
+const dotsEl = document.getElementById('pageDots');
+PAGES.forEach((p,i) => {
+  const btn = document.createElement('button');
+  btn.title = LABELS[i]; btn.dataset.page = p;
+  btn.onclick = () => goTo(p);
+  if (p === 'home') btn.classList.add('active');
+  dotsEl.appendChild(btn);
+});
+
+function goTo(id) {
+  if (id === current) return;
+  const oldEl = document.getElementById('page-' + current);
+  const newEl = document.getElementById('page-' + id);
+  if (!newEl) return;
+  oldEl.classList.add('exiting');
+  setTimeout(() => { oldEl.classList.remove('active','exiting'); newEl.classList.add('active'); newEl.scrollTop = 0; }, 220);
+  current = id;
+  // Update all nav + dot active states
+  document.querySelectorAll('[data-page]').forEach(b => b.classList.toggle('active', b.dataset.page === id));
+}
+
+function toggleMenu() {
+  document.getElementById('mobileMenu').classList.toggle('open');
+  document.getElementById('hamburger').classList.toggle('open');
+}
+function closeMenu() {
+  document.getElementById('mobileMenu').classList.remove('open');
+  document.getElementById('hamburger').classList.remove('open');
+}
+
+// Keyboard navigation
+document.addEventListener('keydown', e => {
+  const i = PAGES.indexOf(current);
+  if ((e.key==='ArrowDown'||e.key==='ArrowRight') && i < PAGES.length-1) goTo(PAGES[i+1]);
+  if ((e.key==='ArrowUp'||e.key==='ArrowLeft') && i > 0) goTo(PAGES[i-1]);
+});
+
+// Swipe navigation
+let ty = 0;
+const wrapper = document.querySelector('.pages-wrapper');
+wrapper.addEventListener('touchstart', e => { ty = e.touches[0].clientY; }, {passive:true});
+wrapper.addEventListener('touchend', e => {
+  const diff = ty - e.changedTouches[0].clientY;
+  const el = document.getElementById('page-' + current);
+  const atTop = el.scrollTop < 2;
+  const atBot = el.scrollTop + el.clientHeight >= el.scrollHeight - 4;
+  const i = PAGES.indexOf(current);
+  if (Math.abs(diff) > 55) {
+    if (diff > 0 && atBot && i < PAGES.length-1) goTo(PAGES[i+1]);
+    if (diff < 0 && atTop && i > 0) goTo(PAGES[i-1]);
+  }
+}, {passive:true});
+</script>
+</body>
+</html>
